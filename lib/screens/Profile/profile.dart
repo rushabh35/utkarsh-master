@@ -12,7 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final String? loggedInEmail;
+  final String? loggedInEmail;  
 
   const ProfileScreen({
     Key? key,
@@ -55,7 +55,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         // Set the fetched data in the text controllers
         nameController.text = name;
         phoneController.text = phoneNumber;
-      } else {
+      } 
+      else {
+        print('User does not exist');
         return null;
       }
     }
@@ -172,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .snapshots(),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
+                        if (snapshot.hasData && snapshot.data != null) {
                           var userData = snapshot.data!.data();
                           if (userData != null && (userData as Map).containsKey('pickupInfo')) {
                             List<String> pickupInfoIDs = List<String>.from(userData['pickupInfo']);

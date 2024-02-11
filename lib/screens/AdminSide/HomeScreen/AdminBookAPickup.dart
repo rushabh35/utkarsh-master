@@ -72,39 +72,39 @@ class _AdminBookAPickupState extends State<AdminBookAPickup> {
     var sizeHeight = size.height;
     var sizeWidth = size.width;
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: AppConstantsColors.accentColor,
-              ),
-              child: Text('Admin Side Drawer'),
-            ),
-            ListTile(
-              title: const Text('Event Registration'),
-              onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const EventAdd()));
-              },
-            ),   
-            const Divider(),
-            ListTile(
-              title: const Text('Log Out'),
-              onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const LandingPage()));
-              },
-            ),
-          ],
-        ),
-      ),
+      // drawer: Drawer(
+      //   child: ListView(
+      //     // Important: Remove any padding from the ListView.
+      //     padding: EdgeInsets.zero,
+      //     children: [
+      //       const DrawerHeader(
+      //         decoration: BoxDecoration(
+      //           color: AppConstantsColors.accentColor,
+      //         ),
+      //         child: Text('Admin Side Drawer'),
+      //       ),
+      //       ListTile(
+      //         title: const Text('Event Registration'),
+      //         onTap: () async {
+      //           await FirebaseAuth.instance.signOut();
+      //           Navigator.of(context).pop();
+      //           Navigator.of(context).push(MaterialPageRoute(
+      //               builder: (context) => const EventAdd()));
+      //         },
+      //       ),   
+      //       const Divider(),
+      //       ListTile(
+      //         title: const Text('Log Out'),
+      //         onTap: () async {
+      //           await FirebaseAuth.instance.signOut();
+      //           Navigator.of(context).pop();
+      //           Navigator.of(context).push(MaterialPageRoute(
+      //               builder: (context) => const LandingPage()));
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // ),
       appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,

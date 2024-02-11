@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
-import 'package:utkarsh/screens/FundRaising/FundRaising_home.dart';
+import 'package:utkarsh/screens/FundRaising/FundRaising_create.dart';
 import 'package:utkarsh/screens/LandingScreen.dart';
 import 'package:utkarsh/utils/ui/CustomTextWidget.dart';
 

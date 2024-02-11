@@ -4,14 +4,14 @@ import 'package:utkarsh/screens/FundRaising/Education/Education_FR_home.dart';
 import 'package:utkarsh/widgets/HomeTileWidgets.dart';
 
 
-class FundRaisingHome extends StatefulWidget {
-  const FundRaisingHome({super.key});
+class FundRaisingCreate extends StatefulWidget {
+  const FundRaisingCreate({super.key});
 
   @override
-  State<FundRaisingHome> createState() => _FundRaisingHomeState();
+  State<FundRaisingCreate> createState() => _FundRaisingCreateState();
 }
 
-class _FundRaisingHomeState extends State<FundRaisingHome> {
+class _FundRaisingCreateState extends State<FundRaisingCreate> {
   @override
   Widget build(BuildContext context) {
       var size = MediaQuery.of(context).size;
@@ -19,7 +19,7 @@ class _FundRaisingHomeState extends State<FundRaisingHome> {
     var sizeWidth = size.width;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fund Raising Home'),
+        title: const Text('Create Fund Raising'),
         backgroundColor: AppConstantsColors.accentColor,
       ),
       body : SingleChildScrollView(
@@ -66,7 +66,7 @@ class _FundRaisingHomeState extends State<FundRaisingHome> {
                 ),
                 onPressed: () {
                   try {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FundRaisingHome()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FundRaisingCreate()));
                   } catch (e) {
                     print("Navigation error: $e");
                   }
@@ -88,7 +88,7 @@ class _FundRaisingHomeState extends State<FundRaisingHome> {
                 ),
                 onPressed: () {
                   try {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FundRaisingHome()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FundRaisingCreate()));
                   } catch (e) {
                     print("Navigation error: $e");
                   }

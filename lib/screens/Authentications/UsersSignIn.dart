@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:utkarsh/screens/Home/Home.dart';
 import 'package:utkarsh/services/auth.dart';
 import '../../constants/app_constants_colors.dart';
 import '../../utils/ui/ClickableText.dart';
@@ -88,7 +89,7 @@ class _UserSignInState extends State<UserSignIn> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const BottomNavBar()),
+                            builder: (context) => const HomePage()),
                       );
                     }).onError((error, stackTrace) {
                       print("Error ${error.toString()})");

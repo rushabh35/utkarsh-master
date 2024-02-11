@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, duplicate_ignore, depend_on_referenced_packages
 
 import 'dart:io';
 
@@ -6,9 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
-import 'package:utkarsh/screens/book%20a%20pickup/success.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:utkarsh/utils/ui/CustomButton.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -51,7 +48,7 @@ class _EventAddState extends State<EventAdd> {
       maxWidth: 1000,
     );
 
-    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+    if (pickedFiles.isNotEmpty) {
       setState(() {
         selectedImages = pickedFiles.map((file) => File(file.path)).toList();
       });
@@ -93,9 +90,6 @@ class _EventAddState extends State<EventAdd> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var sizeHeight = size.height;
-    var sizeWidth = size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

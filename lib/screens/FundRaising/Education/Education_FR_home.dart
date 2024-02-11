@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
-import 'package:utkarsh/screens/FundRaising/Education/Education_desc_screen.dart';
-import 'package:utkarsh/screens/FundRaising/FundRaising_home.dart';
+import 'package:utkarsh/screens/FundRaising/FundRaising_create.dart';
 import 'package:utkarsh/utils/ui/CustomButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -21,6 +20,7 @@ class _EducationFRHomeState extends State<EducationFRHome> {
   final TextEditingController _relativeController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
   // final TextEditingController _residenceController = TextEditingController();
   final TextEditingController _mobilenoController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -97,7 +97,7 @@ class _EducationFRHomeState extends State<EducationFRHome> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const FundRaisingHome()),
+                    builder: (context) => const FundRaisingCreate()),
               );
             },
           ),
@@ -129,6 +129,43 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width / 1.12,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: TextFormField(
+                              controller: _titleController,
+                              cursorColor: Colors.black,
+                              keyboardType: TextInputType.text,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 15),
+                                hintText: "Title of the cause",
+                                hintStyle: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.title,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter Title';
+                                }
+                                return null;
+                              },
+                              // onSaved: (value) {
+                              //   _name = value!;
+                              // },
+                            ),
+                          ),
+                          const SizedBox(height: 20),
                           Container(
                             height: 50,
                             width: MediaQuery.of(context).size.width / 1.12,
@@ -384,6 +421,7 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                                     _formKey.currentState!.save();
 
                                     Map<String, dynamic> data = {
+                                      "title" : _titleController.text,
                                       "name": _nameController.text,
                                       "mobile": _mobilenoController.text,
                                       "relation": _relativeController.text,
@@ -394,19 +432,19 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                                           _fundsRequiredController.text,
                                       "raisedBy": FirebaseAuth
                                           .instance.currentUser!.email,
-                                      "verified" : false,
+                                      "verified": false,
                                     };
                                     String currentUserUID =
                                         FirebaseAuth.instance.currentUser!.uid;
                                     try {
                                       // DocumentReference docRef =
                                       //     await
-                                           FirebaseFirestore.instance
-                                              .collection('EducationFR')
-                                              .add(data)
-                                              .then((DocumentReference<
-                                                      Map<String, dynamic>>
-                                                  docRef) async {
+                                      FirebaseFirestore.instance
+                                          .collection('EducationFR')
+                                          .add(data)
+                                          .then((DocumentReference<
+                                                  Map<String, dynamic>>
+                                              docRef) async {
                                         String educationFRID = docRef.id;
 
                                         // Update the Users collection with the pickupInfo data and ID
@@ -440,7 +478,7 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              const FundRaisingHome()),
+                                                              const FundRaisingCreate()),
                                                     );
                                                   },
                                                   child: const Text('OK'),
