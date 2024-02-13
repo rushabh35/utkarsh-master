@@ -51,81 +51,98 @@ class _ForumScreenState extends State<ForumScreen> {
   }
 
   Widget buildPostCard(String title, String content, String userEmail, String postId) {
-    
-    return Card(
-      shadowColor: AppConstantsColors.accentColor,
-      elevation: 10,
-      margin: const EdgeInsets.all(8),
-      child: Container(
+    bool isExpanded = false;
+
+    return InkWell(
+      onTap: () {
+        // Implement post details screen navigation here
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Content_add()));
+
+      },
+      child: Card(
+        shadowColor: AppConstantsColors.accentColor,
+        elevation: 10,
         margin: const EdgeInsets.all(8),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+        child: Container(
+          margin: const EdgeInsets.all(8),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Author: $userEmail',
-                style: const TextStyle(
-                  fontStyle: FontStyle.italic,
+                const SizedBox(height: 8),
+                Text(
+                  'Author: $userEmail',
+                  style: const TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey,
+                  ),
+                ),
+                const Divider(
+                  height: 10,
                   color: Colors.grey,
                 ),
-              ),
-              const Divider(
-                height: 10,
-                color: Colors.grey,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                content,
-                style: const TextStyle(fontSize: 16),
-                maxLines: 100,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.thumb_up),
-                          onPressed: () {
-                  
-                            FirebaseFirestore.instance.collection('forums').doc(postId).update({
-                              'likes': FieldValue.arrayUnion([userEmail]),
-                            });
-                  
-                          },
-                        ),
-                        CustomTextWidget(
-                          text: 'Likes',
-                        ),
-                      ],
+                const SizedBox(height: 12),
+                Text(
+                  isExpanded ? content : content.substring(0, 100) + '...', // Limit content to 100 characters
+                  style: const TextStyle(fontSize: 16),
+                  maxLines: isExpanded ? null : 3, // Show max 3 lines initially
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isExpanded = !isExpanded; // Toggle isExpanded state
+                    });
+                  },
+                  child: Text(
+                    isExpanded ? 'Read less' : 'Read more',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.thumb_up),
+                            onPressed: () {
+                              FirebaseFirestore.instance.collection('forums').doc(postId).update({
+                                'likes': FieldValue.arrayUnion([userEmail]),
+                              });
+                            },
+                          ),
+                          CustomTextWidget(
+                            text: 'Likes',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.comment),
-                    onPressed: () {
-                      // Implement comment functionality here
-                    },
-                  ),
-                ],
-              ),
-            ],
+                    IconButton(
+                      icon: Icon(Icons.comment),
+                      onPressed: () {
+                        // Implement comment functionality here
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
-
   }
 }

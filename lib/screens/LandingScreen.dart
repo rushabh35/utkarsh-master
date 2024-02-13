@@ -66,19 +66,7 @@ class _LandingPageState extends State<LandingPage> {
               SizedBox(
                 height: sizeHeight * 0.05,
               ),
-              CustomButton(
-                buttonColor: AppConstantsColors.accentColor,
-                width: sizeWidth * 0.7,
-                height: sizeHeight * 0.06,
-                text: 'Admin Login',
-                onPressed: () {
-                  try {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AdminLogin()));
-                  } catch (e) {
-                    print("Navigation error: $e");
-                  }
-                },
-              ),
+              
             ],
           ),
 

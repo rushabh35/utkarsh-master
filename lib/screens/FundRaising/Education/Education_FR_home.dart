@@ -421,7 +421,7 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                                     _formKey.currentState!.save();
 
                                     Map<String, dynamic> data = {
-                                      "title" : _titleController.text,
+                                      "title": _titleController.text,
                                       "name": _nameController.text,
                                       "mobile": _mobilenoController.text,
                                       "relation": _relativeController.text,
@@ -429,10 +429,11 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                                       "description":
                                           _descriptionController.text,
                                       "fundsRequired":
-                                          _fundsRequiredController.text,
+                                          int.parse(_fundsRequiredController.text),
+                                      "fundsRaised": 0,
                                       "raisedBy": FirebaseAuth
                                           .instance.currentUser!.email,
-                                      "verified": false,
+                                      "verified": 'Pending',
                                     };
                                     String currentUserUID =
                                         FirebaseAuth.instance.currentUser!.uid;

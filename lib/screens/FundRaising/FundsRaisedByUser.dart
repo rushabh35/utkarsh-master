@@ -29,53 +29,56 @@ class _FundsRaisedByUserState extends State<FundsRaisedByUser> {
         title: Text('Funds Raised '),
         backgroundColor: AppConstantsColors.accentColor,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('Users')
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    var userData = snapshot.data!.data();
-                    if (userData != null &&
-                        (userData as Map).containsKey('EducationFR')) {
-                      List<String> eduFRIds =
-                          List<String>.from(userData['EducationFR']);
-                      return Column(
-                        children: eduFRIds
-                            .map((eduFrId) =>
-                                buildPickupInfoCard(eduFrId, sizeWidth))
-                            .toList(),
-                      );
-                    } else {
-                      return const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.info_outline, // Use an information icon
-                            size: 50,
-                            color: Color.fromARGB(255, 24, 23, 23),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'No Funds Raised',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Users')
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var userData = snapshot.data!.data();
+                      if (userData != null &&
+                          (userData as Map).containsKey('EducationFR')) {
+                        List<String> eduFRIds =
+                            List<String>.from(userData['EducationFR']);
+                        return Column(
+                          children: eduFRIds
+                              .map((eduFrId) =>
+                                  buildPickupInfoCard(eduFrId, sizeWidth))
+                              .toList(),
+                        );
+                      } else {
+                        return const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.info_outline, // Use an information icon
+                              size: 50,
+                              color: Color.fromARGB(255, 24, 23, 23),
                             ),
-                          ),
-                        ],
-                      );
+                            SizedBox(height: 10),
+                            Text(
+                              'No Funds Raised',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    } else {
+                      return const CircularProgressIndicator();
                     }
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                }),
-          ],
+                  }),
+            ],
+          ),
         ),
       ),
     );
@@ -99,7 +102,7 @@ Widget buildPickupInfoCard(String educationID, double sizeWidth) {
         String relation = eduFRInfoData['relation'];
         String age = eduFRInfoData['age'];
         String description = eduFRInfoData['description'];
-        String fundsRequired = eduFRInfoData['fundsRequired'];
+        int fundsRequired = eduFRInfoData['fundsRequired'];
         List<dynamic>? images = eduFRInfoData['images'];
         String verified = eduFRInfoData['verified'];
 

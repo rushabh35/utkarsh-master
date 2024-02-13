@@ -43,6 +43,7 @@ class _EducationFRAdminState extends State<EducationFRAdmin> {
                                     documentSnapshot : snapshot.data!.docs[index],
                                   )));
                         },
+                        
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
