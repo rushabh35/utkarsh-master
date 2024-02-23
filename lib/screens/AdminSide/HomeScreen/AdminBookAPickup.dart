@@ -91,7 +91,7 @@ class _AdminBookAPickupState extends State<AdminBookAPickup> {
       //           Navigator.of(context).push(MaterialPageRoute(
       //               builder: (context) => const EventAdd()));
       //         },
-      //       ),   
+      //       ),
       //       const Divider(),
       //       ListTile(
       //         title: const Text('Log Out'),
@@ -156,14 +156,7 @@ class _AdminBookAPickupState extends State<AdminBookAPickup> {
                           ),
                         ),
                         Text(
-                          "Pickup date: ${snapshot.data!.docs[i]['pickupDate']}",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          "Time: ${snapshot.data!.docs[i]['pickupTime']}",
+                          "Pickup Time Stamp: ${snapshot.data!.docs[i]['pickupTimestamp'].toDate().toString().substring(0, 16)}",
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -179,13 +172,21 @@ class _AdminBookAPickupState extends State<AdminBookAPickup> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            snapshot.data!.docs[i]['order_open'] == false
+                                  // ignore: prefer_const_constructors
+                                  ? Text(
+                                      "Pickup Done",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: AppConstantsColors.yellowColor,
+                                      ),
+                                  ) :
                             CustomButton(
                               buttonColor: AppConstantsColors.accentColor,
                               width: sizeWidth * 0.3,
                               height: 30,
-                              text: snapshot.data!.docs[i]['order_open'] == true
-                                  ? "Pickup Open"
-                                  : "Pickup Done",
+                              text:  "Pickup Open",
+                                  
                               onPressed: () {
                                 FirebaseFirestore.instance
                                     .collection('pickupInfo')
@@ -224,5 +225,3 @@ class _AdminBookAPickupState extends State<AdminBookAPickup> {
     );
   }
 }
-
-  

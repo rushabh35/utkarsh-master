@@ -1,119 +1,105 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class DonationsHome extends StatefulWidget {
-  const DonationsHome({Key? key}) : super(key: key);
+  final DocumentSnapshot? documentSnapshot; // Make documentSnapshot nullable
+
+  DonationsHome({Key? key, this.documentSnapshot}) : super(key: key); // Optional parameter
 
   @override
-  _DonateState createState() => _DonateState();
+  _DonationsHomeState createState() => _DonationsHomeState();
 }
 
-class _DonateState extends State<DonationsHome> {
-  List<String> ngoNames = []; // List to store NGO names
-  String selectedNGO = ''; // Selected NGO name
-
-  Future<void> fetchNGONames() async {
-    // Fetch NGO names from Firebase
-    QuerySnapshot query = await FirebaseFirestore.instance.collection('NGO').get();
-
-    setState(() {
-      ngoNames = query.docs.map((doc) => doc['name'] as String).toList();
-    });
-  }
-
-  late var _razorpay;
-  var amountController = TextEditingController();
+class _DonationsHomeState extends State<DonationsHome> {
+  late Razorpay _razorpay;
+  TextEditingController amountController = TextEditingController();
 
   @override
   void initState() {
+    super.initState();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-    fetchNGONames();
-    super.initState();
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    // Do something when payment succeeds
-    print("Payment Done");
+    print("Payment Successful: ${response.paymentId}");
+    if (widget.documentSnapshot != null) {
+      int amount = int.tryParse(amountController.text) ?? 0; // Default to 0 if parsing fails
+      if (amount > 0) {
+        widget.documentSnapshot!.reference.update({
+          "fundsRaised": FieldValue.increment(amount)
+        }).then((_) {
+          print("Funds raised updated successfully.");
+        }).catchError((error) {
+          print("Error updating funds raised: $error");
+        });
+      } else {
+        print("Invalid amount entered.");
+      }
+    } else {
+      print("Document snapshot is null, cannot update fundsRaised.");
+    }
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
-    // Do something when payment fails
-    print("Payment Fail");
+    print("Payment Error: ${response.code} | ${response.message}");
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
-    // Do something when an external wallet is selected
+    print("External Wallet: ${response.walletName}");
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Donation App"),
+      appBar: const CupertinoNavigationBar(
+        middle: Text("Utkarsh"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [ 
-           SizedBox(
-  height: 50, // Set a desired height for the dropdown
-  child: DropdownButton<String>(
-    value: selectedNGO,
-    items: ngoNames.map((String ngoName) {
-      return DropdownMenuItem<String>(
-        value: ngoName,
-        child: Text(ngoName),
-      );
-    }).toList(),
-    onChanged: (String? newValue) {
-      setState(() {
-        selectedNGO = newValue!;
-      });
-    },
-  ),
-),
-
-            const SizedBox(height: 20),
+          children: [
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: "Enter your Amount",
-                labelText: "Amount",
-                border: OutlineInputBorder(),
+              decoration: const InputDecoration(
+                hintText: "Enter your amount",
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                /// Make payment
-                var options = {
-                  'key': "rzp_test_qdud3n0OBSOfpb",
-                  'amount': (int.parse(amountController.text) * 100).toString(),
-                  'name': 'Utkarsh',
-                  'description': 'Demo',
-                  'timeout': 300,
-                  'prefill': {
-                    'contact': '8108666590',
-                    'email': 'rushabhyeole03@gmail.com',
-                  },
-                };
-                _razorpay.open(options);
-              },
-              child: Text("Pay Amount"),
+            CupertinoButton(
+              color: Colors.grey,
+              child: const Text("Pay Amount"),
+              onPressed: _makePayment,
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _makePayment() {
+    int amount = int.tryParse(amountController.text) ?? 0;
+    if (amount <= 0) {
+      print("Invalid amount entered.");
+      return;
+    }
+    var options = {
+      'key': "rzp_test_qdud3n0OBSOfpb",
+      'amount': (amount * 100).toString(), // Convert to the smallest currency unit
+      'name': 'Utkarsh',
+      'description': 'Donation',
+      'prefill': {
+        'contact': '8108666590',
+        'email': 'email@example.com'
+      }
+    };
+    _razorpay.open(options);
   }
 
   @override

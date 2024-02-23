@@ -5,15 +5,17 @@ import 'package:utkarsh/services/ngo_auth.dart';
 import 'screens/LandingScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MultiProvider(providers: [
     Provider<AuthenticationServices>(
       create: (context) => AuthenticationServices(FirebaseAuth.instance),
     ),
-     Provider<NGOAuthServices>(
+    Provider<NGOAuthServices>(
       create: (context) => NGOAuthServices(FirebaseAuth.instance),
     ),
   ], child: const MyApp()));
@@ -26,10 +28,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: 
-        LandingPage()
-
-        );
+        debugShowCheckedModeBanner: false, home: LandingPage());
   }
 }

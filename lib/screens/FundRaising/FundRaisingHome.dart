@@ -20,65 +20,150 @@ class _FundRaisingHomeState extends State<FundRaisingHome> {
         title: const Text('Fund Raising'),
         backgroundColor: AppConstantsColors.accentColor,
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('EducationFR').snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                final document = snapshot.data!.docs[index].data() as Map<String, dynamic>;
-                final verifiedStatus = document['verified'] as String?;
-                if (verifiedStatus == 'Approved') {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => EducationFRDescriptive(
-                          documentSnapshot: snapshot.data!.docs[index],
-                        ),
-                      ));
-                    },
-                    child: Card(
-                      margin: EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Image.network(
-                                document['images'][0], // Fetch the first image URL
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width * 0.2,
-                                height: MediaQuery.of(context).size.height * 0.1,
+      body: Column(
+        children: [
+          // Expanded(
+          //   child: 
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('EducationFR')
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    shrinkWrap:  true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      final document = snapshot.data!.docs[index].data()
+                          as Map<String, dynamic>;
+                      final verifiedStatus = document['verified'] as String?;
+                      if (verifiedStatus == 'Approved') {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EducationFRDescriptive(
+                                documentSnapshot: snapshot.data!.docs[index],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  document['title'], // Provide the title from Firebase
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            ));
+                          },
+                          child: Card(
+                            margin: EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Image.network(
+                                      document['images']
+                                          [0], // Fetch the first image URL
+                                      fit: BoxFit.cover,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.2,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.1,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        document[
+                                            'title'], // Provide the title from Firebase
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
+                        );
+                      } else {
+                        // Return an empty container for rejected or unverified documents
+                        return Container();
+                      }
+                    },
                   );
                 } else {
-                  // Return an empty container for rejected or unverified documents
-                  return Container();
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
               },
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+            ),
+          // ),
+            StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection('MedicalFR').snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    shrinkWrap:  true,
+                     physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      final document = snapshot.data!.docs[index].data()
+                          as Map<String, dynamic>;
+                      final verifiedStatus = document['verified'] as String?;
+                      if (verifiedStatus == 'Approved') {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EducationFRDescriptive(
+                                documentSnapshot: snapshot.data!.docs[index],
+                              ),
+                            ));
+                          },
+                          child: Card(
+                            margin: EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Image.network(
+                                      document['images']
+                                          [0], // Fetch the first image URL
+                                      fit: BoxFit.cover,
+                                      width:
+                                          MediaQuery.of(context).size.width * 0.2,
+                                      height: MediaQuery.of(context).size.height *
+                                          0.1,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        document[
+                                            'title'], // Provide the title from Firebase
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        // Return an empty container for rejected or unverified documents
+                        return Container();
+                      }
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

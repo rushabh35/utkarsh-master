@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
+import 'package:utkarsh/screens/AdminSide/AssignRoles/AssignRoles.dart';
 import 'package:utkarsh/screens/AdminSide/FundRaisings/AdminFundRaising.dart';
 import 'package:utkarsh/screens/AdminSide/Event%20Registration/event_add.dart';
 import 'package:utkarsh/screens/AdminSide/HomeScreen/AdminBookAPickup.dart';
@@ -76,7 +77,7 @@ class HomePage extends StatelessWidget {
                         title: const Text('Donations'),
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const DonationsHome()));
+                              builder: (context) =>  DonationsHome()));
                           // Update the state of the app.
                           // ...
                         },
@@ -121,6 +122,13 @@ class HomePage extends StatelessWidget {
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => AdminFundRaising()));
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Assign Roles'),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => AssignRoles()));
                           },
                         ),
                       ],

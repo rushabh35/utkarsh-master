@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
 import 'package:utkarsh/screens/FundRaising/Education/Education_FR_home.dart';
+import 'package:utkarsh/screens/FundRaising/Medical/Medical_FR_home.dart';
 import 'package:utkarsh/widgets/HomeTileWidgets.dart';
 
 
@@ -88,7 +89,7 @@ class _FundRaisingCreateState extends State<FundRaisingCreate> {
                 ),
                 onPressed: () {
                   try {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FundRaisingCreate()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MedicalFRHome()));
                   } catch (e) {
                     print("Navigation error: $e");
                   }

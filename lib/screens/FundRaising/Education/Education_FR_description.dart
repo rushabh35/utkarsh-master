@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:utkarsh/screens/Donations/donations_home.dart';
 import 'package:utkarsh/utils/ui/CustomButton.dart';
 
 class EducationFRDescriptive extends StatefulWidget {
@@ -34,8 +35,7 @@ class _EducationFRDescriptiveState extends State<EducationFRDescriptive> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> imageUrls = widget.documentSnapshot['images'];
-    double fundsRaised =
-        widget.documentSnapshot['fundsRaised'].toDouble(); // Example value
+    double fundsRaised = widget.documentSnapshot['fundsRaised'].toDouble(); // Example value
     double fundsRequired =
         widget.documentSnapshot['fundsRequired'].toDouble(); // Example value
     double progress = fundsRaised / fundsRequired;
@@ -86,6 +86,11 @@ class _EducationFRDescriptiveState extends State<EducationFRDescriptive> {
                 buttonColor: AppConstantsColors.accentColor,
                 onPressed: () {
                   // Add your donation logic here
+                  Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DonationsHome(
+                          documentSnapshot: widget.documentSnapshot,
+                        ),
+                      ));
                 },
               )
             ],

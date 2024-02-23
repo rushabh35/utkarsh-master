@@ -69,6 +69,7 @@ class AuthenticationServices {
         'name': name,
         'email': email,
         'number': number,
+        'isAdmin' : false,
       });
 
       return "Signed up";

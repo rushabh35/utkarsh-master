@@ -251,8 +251,7 @@ Widget buildPickupInfoCard(String pickupInfoID, double sizeWidth) {
         String name = pickupInfoData['name'];
         String location = pickupInfoData['location'];
         String mobile = pickupInfoData['mobile'];
-        String pickupDate = pickupInfoData['pickupDate'];
-        String pickupTime = pickupInfoData['pickupTime'];
+        String pickupTimestamp = pickupInfoData['pickupTimestamp'].toDate().toString().substring(0, 16);
         String quantity = pickupInfoData['quantity'];
         List<dynamic>? images = pickupInfoData['images'];
 
@@ -288,19 +287,13 @@ Widget buildPickupInfoCard(String pickupInfoID, double sizeWidth) {
                   ),
                 ),
                 Text(
-                  "Pickup date: $pickupDate",
+                  "Pickup TimeStamp: $pickupTimestamp",
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white,
                   ),
                 ),
-                Text(
-                  "Time: $pickupTime",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
+                
                 Text(
                   "Quantity: $quantity",
                   style: const TextStyle(
@@ -311,12 +304,12 @@ Widget buildPickupInfoCard(String pickupInfoID, double sizeWidth) {
                 if (pickupInfoData['order_open'] == true)
                   const CustomTextWidget(
                     textColor: AppConstantsColors.accentColor,
-                    text: 'Distribution of Donations Pending',
+                    text: 'Pickup Pending',
                   ),
                 if (pickupInfoData['order_open'] == false)
                   const CustomTextWidget(
                     textColor: AppConstantsColors.accentColor,
-                    text: 'Distribution of Donations Done',
+                    text: 'Pickup Done',
                   ),
                 if (images != null && images.isNotEmpty)
                   SizedBox(
