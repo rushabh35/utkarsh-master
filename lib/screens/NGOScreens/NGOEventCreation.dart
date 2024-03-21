@@ -6,17 +6,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
-
-class EventAdd extends StatefulWidget {
-  const EventAdd({Key? key}) : super(key: key);
+import 'package:firebase_auth/firebase_auth.dart';
+class NGOEventCreation extends StatefulWidget {
+  const NGOEventCreation({Key? key}) : super(key: key);
 
   @override
-  State<EventAdd> createState() => _EventAddState();
+  State<NGOEventCreation> createState() => _NGOEventCreationState();
 }
 
-class _EventAddState extends State<EventAdd> {
+class _NGOEventCreationState extends State<NGOEventCreation> {
   final TextEditingController _dateinputController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
@@ -380,8 +378,7 @@ class _EventAddState extends State<EventAdd> {
                             "eventTimestamp": pickupTimestamp,
                             "skills": _skillsController.text,
                             "description": _descriptionController.text,
-                            "raisedBy" : "Admin"
-
+                            "raisedBy" : FirebaseAuth.instance.currentUser!.email,
                           };
                           try {
                             await FirebaseFirestore.instance

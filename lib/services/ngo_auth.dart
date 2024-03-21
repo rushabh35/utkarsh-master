@@ -35,6 +35,7 @@ class NGOAuthServices {
     required String email,
     required String number,
     required String password,
+    required String regNo,
   }) async {
     try {
       await _firebaseAuthNGO.createUserWithEmailAndPassword(
@@ -50,6 +51,7 @@ class NGOAuthServices {
         'name': name,
         'email': email,
         'number': number,
+        'regNo': regNo,
       });
 
       return "Signed up";

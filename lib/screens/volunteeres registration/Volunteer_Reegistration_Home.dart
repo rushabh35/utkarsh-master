@@ -69,15 +69,28 @@ class _VolunteerRegistrationHomeState extends State<VolunteerRegistrationHome> {
         ),
       ),
       body: StreamBuilder(
-        stream:
-            FirebaseFirestore.instance.collection('UpcomingEvents').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('UpcomingEvents')
+            .where('eventTimestamp', isGreaterThan: Timestamp.fromDate(DateTime.now())) // Filter events by timestamp
+            .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-          var events = snapshot.data?.docs;
+          var events = snapshot.data?.docs.where((DocumentSnapshot document) {
+            Timestamp eventTimestamp = document['eventTimestamp'];
+            return eventTimestamp.toDate().isAfter(DateTime.now());
+          }).toList();
+          if (events == null || events.isEmpty) {
+            return const Center(
+              child: Text(
+                'No upcoming events',
+                style: TextStyle(color: AppConstantsColors.blackColor),
+              ),
+            );
+          }
           return ListView.builder(
             itemCount: events?.length,
             itemBuilder: (context, i) {
@@ -117,7 +130,7 @@ class _VolunteerRegistrationHomeState extends State<VolunteerRegistrationHome> {
                         ),
                       ),
                       Text(
-                        "Event Time Date : ${snapshot.data!.docs[i]['eventTimestamp'].toDate().toString().substring(0,16) }",
+                        "Event Time Date : ${snapshot.data!.docs[i]['eventTimestamp'].toDate().toString().substring(0, 16)}",
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.white,
@@ -137,7 +150,14 @@ class _VolunteerRegistrationHomeState extends State<VolunteerRegistrationHome> {
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(
+                      Text(
+                        "Raised By: ${snapshot.data!.docs[i]['raisedBy']}",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(
                         height: 20,
                       ),
                       Row(

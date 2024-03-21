@@ -82,15 +82,15 @@ class HomePage extends StatelessWidget {
                           // ...
                         },
                       ),
-                      ListTile(
-                        title: const Text('Forums'),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ForumScreen()));
-                          // Update the state of the app.
-                          // ...
-                        },
-                      ),
+                      // ListTile(
+                      //   title: const Text('Forums'),
+                      //   onTap: () {
+                      //     Navigator.of(context).push(MaterialPageRoute(
+                      //         builder: (context) => ForumScreen()));
+                      //     // Update the state of the app.
+                      //     // ...
+                      //   },
+                      // ),
                       ListTile(
                         title: const Text('Fund Raising'),
                         onTap: () {

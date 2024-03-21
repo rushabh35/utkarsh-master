@@ -25,6 +25,7 @@ class _NGOSignUpState extends State<NGOSignUp> {
   final TextEditingController _passWordController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _regNoController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
   bool _isNotValid = false;
  @override
@@ -33,6 +34,7 @@ class _NGOSignUpState extends State<NGOSignUp> {
     _emailController.dispose();
     _nameController.dispose();
     _numberController.dispose();
+    _regNoController.dispose();
     super.dispose();
   }
   @override
@@ -82,6 +84,11 @@ class _NGOSignUpState extends State<NGOSignUp> {
                 errorText : _isNotValid ? "Enter Name Field" : null,
               ),
               LoginTextFieldWidget(
+                controller: _regNoController,
+                hintText: 'Registration Number',
+                errorText : _isNotValid ? "Enter reg no" : null,
+              ),
+              LoginTextFieldWidget(
                 controller: _emailController,
                 hintText: 'NGO Email',
                 errorText : _isNotValid ? "Enter Email Field" : null,
@@ -106,6 +113,7 @@ class _NGOSignUpState extends State<NGOSignUp> {
                         email: _emailController.text.trim(),
                         password: _passWordController.text.trim(),
                         name: _nameController.text.trim(),
+                        regNo: _regNoController.text.trim(),
                         number: _numberController.text.trim(),
                       );
                       // ignore: use_build_context_synchronously
