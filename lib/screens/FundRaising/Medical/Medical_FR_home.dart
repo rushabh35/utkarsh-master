@@ -33,9 +33,11 @@ class _MedicalFRHomeState extends State<MedicalFRHome> {
   final TextEditingController _fundsRequiredController =
       TextEditingController();
   List<File> selectedImages = [];
+  List<File> selectedIT = [];
   final picker = ImagePicker();
   final _formKey = GlobalKey<FormState>();
-  Future<void> getImages() async {
+
+  Future getImages() async {
     List<XFile>? pickedFiles = await picker.pickMultiImage(
       imageQuality: 100,
       maxHeight: 1000,
@@ -43,11 +45,30 @@ class _MedicalFRHomeState extends State<MedicalFRHome> {
     );
 
     if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      print("Number of picked files: ${pickedFiles.length}");
+      setState(() {
+        selectedImages = pickedFiles.map((file) => File(file.path)).toList();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nothing is selected')),
+      );
+    }
+  }
+
+  Future<void> getITCertificate() async {
+    List<XFile>? pickedIT = await picker.pickMultiImage(
+      imageQuality: 100,
+      maxHeight: 1000,
+      maxWidth: 1000,
+    );
+
+    if (pickedIT != null && pickedIT.isNotEmpty) {
       // New list to keep track of images that are verified as income certificates
       List<File> verifiedImages = [];
 
-      for (var pickedFile in pickedFiles) {
-        File imageFile = File(pickedFile.path);
+      for (var pickedIT in pickedIT) {
+        File imageFile = File(pickedIT.path);
         // Call the image analysis function
         try {
           Map<String, dynamic> analysisResult = await analyzeImageWithVisionApi(
@@ -79,7 +100,7 @@ class _MedicalFRHomeState extends State<MedicalFRHome> {
 
       if (verifiedImages.isNotEmpty) {
         setState(() {
-          selectedImages = verifiedImages;
+          selectedIT = verifiedImages;
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -134,9 +155,39 @@ class _MedicalFRHomeState extends State<MedicalFRHome> {
     return hasRequiredText;
   }
 
-  Future<void> _uploadImages(String documentId) async {
+Future<void> _uploadImages(String documentId) async {
     try {
       for (File imageFile in selectedImages) {
+        String uniqueFileName =
+            DateTime.now().millisecondsSinceEpoch.toString();
+        Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child("MedicalFRImages")
+            .child("$documentId/$uniqueFileName.jpg");
+
+        UploadTask uploadTask = storageReference.putFile(imageFile);
+
+        await uploadTask.whenComplete(() async {
+          String imageUrl = await storageReference.getDownloadURL();
+
+          // Update Firestore document with the image URL
+          await FirebaseFirestore.instance
+              .collection('MedicalFR')
+              .doc(documentId)
+              .update({
+            'images': FieldValue.arrayUnion([imageUrl]),
+          });
+        });
+        // });
+      }
+    } catch (error) {
+      print("Error uploading image: $error");
+    }
+  }
+
+  Future<void> _uploadIT(String documentId) async {
+    try {
+      for (File imageFile in selectedIT) {
         String uniqueFileName =
             DateTime.now().millisecondsSinceEpoch.toString();
         Reference storageReference = FirebaseStorage.instance
@@ -493,6 +544,17 @@ class _MedicalFRHomeState extends State<MedicalFRHome> {
                             height: 50,
                             text: "Upload IT certificate",
                             onPressed: () async {
+                              await getITCertificate();
+                            },
+                          ),
+                          const SizedBox(height: 20),
+
+                          CustomButton(
+                            buttonColor: AppConstantsColors.appYellowColor,
+                            width: MediaQuery.of(context).size.width / 1.12,
+                            height: 50,
+                            text: "Upload Images Of Needy",
+                            onPressed: () async {
                               await getImages();
                             },
                           ),
@@ -549,7 +611,9 @@ class _MedicalFRHomeState extends State<MedicalFRHome> {
                                           "MedicalFR": FieldValue.arrayUnion(
                                               [medicalFRID]),
                                         });
+                                        _uploadIT(docRef.id);
                                         _uploadImages(docRef.id);
+
                                         // ignore: use_build_context_synchronously
                                         showDialog(
                                           context: context,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utkarsh/screens/Home/Home.dart';
 import 'package:utkarsh/services/auth.dart';
 import 'package:utkarsh/widgets/TextFieldWidget.dart';
 import '../../../../utils/ui/ClickableText.dart';
@@ -114,7 +115,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              const BottomNavBar(),
+                              const HomePage(),
                         ),
                       );
                     // } else {

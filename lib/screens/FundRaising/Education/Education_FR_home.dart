@@ -393,7 +393,7 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                             buttonColor: AppConstantsColors.appYellowColor,
                             width: MediaQuery.of(context).size.width / 1.12,
                             height: 50,
-                            text: "Upload Images of Pickup",
+                            text: "Upload Images",
                             onPressed: () async {
                               await getImages();
                             },

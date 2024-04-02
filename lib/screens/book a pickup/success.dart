@@ -85,7 +85,7 @@ class _SuccessPageState extends State<SuccessPage> {
                       )
                   ),
                    onPressed: () {  Navigator.push(context,MaterialPageRoute(
-                       builder: (context) =>  BottomNavBar() )); },
+                       builder: (context) =>  const HomePage() )); },
                   child: const Text('Home',style: TextStyle(fontSize: 18)),
               ),
 

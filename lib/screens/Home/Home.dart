@@ -12,6 +12,7 @@ import 'package:utkarsh/screens/Forums/Forum_home.dart';
 import 'package:utkarsh/screens/FundRaising/FundRaisingHome.dart';
 import 'package:utkarsh/screens/FundRaising/FundRaising_create.dart';
 import 'package:utkarsh/screens/LandingScreen.dart';
+import 'package:utkarsh/screens/NearbyNGO/NearbyNGO.dart';
 import 'package:utkarsh/screens/Profile/profile.dart';
 import 'package:utkarsh/screens/book%20a%20pickup/BookPickup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -77,7 +78,7 @@ class HomePage extends StatelessWidget {
                         title: const Text('Donations'),
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>  DonationsHome()));
+                              builder: (context) => DonationsHome()));
                           // Update the state of the app.
                           // ...
                         },
@@ -96,6 +97,15 @@ class HomePage extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => FundRaisingHome()));
+                          // Update the state of the app.
+                          // ...
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Nearby NGOs'),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => NearbyNGO()));
                           // Update the state of the app.
                           // ...
                         },
