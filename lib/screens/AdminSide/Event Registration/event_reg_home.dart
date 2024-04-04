@@ -1,29 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:utkarsh/screens/AdminSide/FundRaisings/EducationFRAdmin.dart';
-import 'package:utkarsh/screens/AdminSide/FundRaisings/MedicalFRAdmin.dart';
-import 'package:utkarsh/screens/Authentications/UsersSignIn.dart';
-import 'package:utkarsh/screens/FundRaising/EduFundsRaisedByUser.dart';
-import 'package:utkarsh/screens/FundRaising/MedFundsRaisedByUser.dart';
+import 'package:utkarsh/screens/AdminSide/Event%20Registration/VolunteersList.dart';
+import 'package:utkarsh/screens/AdminSide/Event%20Registration/event_add.dart';
 import 'package:utkarsh/utils/ui/CustomButton.dart';
-class FundsRaisedByUser extends StatefulWidget {
-  const FundsRaisedByUser({super.key});
+
+class EventRegHome extends StatefulWidget {
+  const EventRegHome({super.key});
 
   @override
-  State<FundsRaisedByUser> createState() => _FundsRaisedByUserState();
+  State<EventRegHome> createState() => _EventRegHomeState();
 }
 
-class _FundsRaisedByUserState extends State<FundsRaisedByUser> {
+class _EventRegHomeState extends State<EventRegHome> {
   @override
   Widget build(BuildContext context) {
     final sizeHeight = MediaQuery.of(context).size.height;
     final sizeWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Fund Raised  By User'),
-        backgroundColor: AppConstantsColors.accentColor,
+        iconTheme: const IconThemeData(
+          color: Colors.grey,
+        ),
+        backgroundColor: Colors.white,
+        title: const Row(
+          children: [
+            Text(
+              'Event Management',
+              style: TextStyle(
+                overflow: TextOverflow.clip,
+                color: AppConstantsColors.blackColor,
+              ),
+            ), 
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -34,19 +44,19 @@ class _FundsRaisedByUserState extends State<FundsRaisedByUser> {
               CustomButton(
                 height: sizeHeight * 0.06,
                 width: sizeWidth * 0.7,
-                text: "Education Fund Raisings", 
+                text: "Event Creation", 
                 buttonColor: AppConstantsColors.brightWhiteColor,
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const EduFundsRaisedByUser()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const EventAdd()));
                 }
               ),
               CustomButton(
                 height: sizeHeight * 0.06,
                 width: sizeWidth * 0.7,
-                text: "Medical Fund Raisings", 
+                text: "Volunteers List For Events", 
                 buttonColor: AppConstantsColors.brightWhiteColor,
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MedFundsRaisedByUser()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const VolunteersList()));
                 }
               ),
               
@@ -54,6 +64,7 @@ class _FundsRaisedByUserState extends State<FundsRaisedByUser> {
           ),
         ),
       )
+
     );
   }
 }

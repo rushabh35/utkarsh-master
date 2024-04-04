@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:utkarsh/repository/UserRepository.dart';
+import 'package:utkarsh/screens/FundRaising/EduFundsRaisedByUser.dart';
 import 'package:utkarsh/screens/FundRaising/FundsRaisedByUser.dart';
+import 'package:utkarsh/screens/Profile/PickupInformationUser.dart';
 import 'package:utkarsh/utils/ui/CustomButton.dart';
 import 'package:utkarsh/utils/ui/CustomTextWidget.dart';
 import 'package:utkarsh/widgets/FullScreenImagePreview.dart';
@@ -158,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: AppConstantsColors.grey, // Set the color here
                         ),
                         const CustomTextWidget(
-                          text: 'Pickup inforamtion',
+                          text: 'Inforamtion',
                           textColor: AppConstantsColors.blackColor,
                         ),
                         Container(
@@ -168,46 +170,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
-                    StreamBuilder<DocumentSnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Users')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data != null) {
-                          var userData = snapshot.data!.data();
-                          if (userData != null && (userData as Map).containsKey('pickupInfo')) {
-                            List<String> pickupInfoIDs = List<String>.from(userData['pickupInfo']);
-                            return Column(
-                              children: pickupInfoIDs
-                                  .map((pickupInfoID) => buildPickupInfoCard(
-                                      pickupInfoID, sizeWidth))
-                                  .toList(),
-                            );
-                          } else {
-                            return const Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.info_outline, // Use an information icon
-                                  size: 50,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'No pickup information available',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                        } else {
-                          return const CircularProgressIndicator();
+                    SizedBox(height: sizeHeight * 0.05),
+                    CustomButton(
+                      width: sizeWidth * 0.85,
+                      height: 40,
+                      buttonColor: AppConstantsColors.yellowColor,
+                      text: 'Your Pickups and Deliveries', 
+                      onPressed: () {
+                        try {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => PickupInformationUser()));
+                        } catch (e) {
+                          print("Navigation error: $e");
                         }
                       },
+                      
                     ),
                     SizedBox(height: sizeHeight * 0.05),
                     CustomButton(
@@ -237,125 +213,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-Widget buildPickupInfoCard(String pickupInfoID, double sizeWidth) {
-  return StreamBuilder(
-    stream: FirebaseFirestore.instance
-        .collection('pickupInfo')
-        .doc(pickupInfoID)
-        .snapshots(),
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        // Extract pickupInfo data
-        Map<String, dynamic> pickupInfoData =
-            snapshot.data!.data() as Map<String, dynamic>;
-        String name = pickupInfoData['name'];
-        String location = pickupInfoData['location'];
-        String mobile = pickupInfoData['mobile'];
-        String pickupTimestamp = pickupInfoData['pickupTimestamp'].toDate().toString().substring(0, 16);
-        String quantity = pickupInfoData['quantity'];
-        List<dynamic>? images = pickupInfoData['images'];
-
-        return Card(
-          margin: const EdgeInsets.all(20),
-          color: AppConstantsColors.blackColor,
-          elevation: 5,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Name: $name",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  "Location: $location",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  "PhoneNumber: $mobile",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  "Pickup TimeStamp: $pickupTimestamp",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
-                
-                Text(
-                  "Quantity: $quantity",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
-                if (pickupInfoData['order_open'] == true)
-                  const CustomTextWidget(
-                    textColor: AppConstantsColors.accentColor,
-                    text: 'Pickup Pending',
-                  ),
-                if (pickupInfoData['order_open'] == false)
-                  const CustomTextWidget(
-                    textColor: AppConstantsColors.accentColor,
-                    text: 'Pickup Done',
-                  ),
-                if (images != null && images.isNotEmpty)
-                  SizedBox(
-                    height: 100,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: images.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FullScreenImageView(
-                                  imageUrl: images[index],
-                                ),
-                              ),
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Hero(
-                              tag: images[
-                                  index], // Unique tag for hero animation
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Image.network(
-                                  images[index],
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      } else {
-        return const CircularProgressIndicator();
-      }
-    },
-  );
-}

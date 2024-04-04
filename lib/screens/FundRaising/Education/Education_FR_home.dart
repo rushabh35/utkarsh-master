@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
+import 'package:utkarsh/screens/FundRaising/FundRaisingHome.dart';
 import 'package:utkarsh/screens/FundRaising/FundRaising_create.dart';
+import 'package:utkarsh/screens/Home/Home.dart';
 import 'package:utkarsh/utils/ui/CustomButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,6 +19,8 @@ class EducationFRHome extends StatefulWidget {
 }
 
 class _EducationFRHomeState extends State<EducationFRHome> {
+  String? _selectedRelation;
+
   final TextEditingController _relativeController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
@@ -241,40 +245,54 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Container(
-                            height: 50,
+                         Container(
+                            height: 60, // Adjusted height for better dropdown visibility
                             width: MediaQuery.of(context).size.width / 1.12,
+                            padding: EdgeInsets.symmetric(horizontal: 15), // Padding for aesthetic adjustment
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            child: TextFormField(
-                              controller: _relativeController,
-                              cursorColor: Colors.black,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 15),
-                                hintText:
-                                    'FundRaiser for relatives or yourself?',
-                                hintStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
+                            child: DropdownButtonFormField<String>(
+                              hint: const Text('Select Relation'),
+                              decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey[200]!, width: 2),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                prefixIcon: Icon(
-                                  Icons.handshake,
-                                  color: Colors.grey,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey[200]!, width: 2),
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Please enter relation";
-                                }
-                                return null;
+                              value: _selectedRelation, // This is now nullable
+                              icon: const Icon(Icons.arrow_downward, color: Colors.grey),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: const TextStyle(color: Colors.black),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedRelation = newValue;
+                                });
                               },
-                              // onSaved: (value) {
-                              //   _number = value!;
-                              // },
+                              items: <String>[
+                                'Mother',
+                                'Father',
+                                'Sibling',
+                                'Child',
+                                'Spouse',
+                                'Yourself',
+                                'Friend',
+                                'Others'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              validator: (value) => value == null ? 'Please select a relation' : null,
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -424,7 +442,7 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                                       "title": _titleController.text,
                                       "name": _nameController.text,
                                       "mobile": _mobilenoController.text,
-                                      "relation": _relativeController.text,
+                                      "relation": _selectedRelation,
                                       "age": _ageController.text,
                                       "description":
                                           _descriptionController.text,
@@ -475,12 +493,11 @@ class _EducationFRHomeState extends State<EducationFRHome> {
                                                   ),
                                                   onPressed: () {
                                                     // Navigator.pop(context);
-                                                    Navigator.push(
+                                                    Navigator.pushReplacement(
                                                       context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const FundRaisingCreate()),
+                                                      MaterialPageRoute(builder: (context) => const HomePage()),
                                                     );
+
                                                   },
                                                   child: const Text('OK'),
                                                 ),

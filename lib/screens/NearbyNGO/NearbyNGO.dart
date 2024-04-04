@@ -3,13 +3,16 @@ import 'package:location/location.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:geolocator/geolocator.dart'; 
+import 'package:geolocator/geolocator.dart';
+import 'package:utkarsh/constants/app_constants_colors.dart';
+import 'package:utkarsh/screens/NearbyNGO/CardWidget.dart'; 
 class NGO {
   final String name;
   final String address;
   final double distance;
+  final String? website; // Optional field for website
 
-  NGO({required this.name, required this.address, required this.distance});
+  NGO({required this.name, required this.address, required this.distance, this.website});
 }
 
 class NearbyNGO extends StatefulWidget {
@@ -58,7 +61,7 @@ class _NearbyNGOState extends State<NearbyNGO> {
     final apiKey = dotenv.env['maps_api'] ?? '';
     final response = await http.get(Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${_locationData?.latitude},${_locationData?.longitude}&radius=5000&type=non-profit&keyword=ngo&key=$apiKey'));
-    print(response.body);
+      print(response.body);
      if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
@@ -77,6 +80,7 @@ class _NearbyNGOState extends State<NearbyNGO> {
             name: item['name'],
             address: item['vicinity'], // Assuming 'vicinity' is the field for address
             distance: distanceInMeters / 1000, // Convert meters to kilometers
+            website: item['website'], // Assuming 'website' is the field for website
           );
         }).toList();
       });
@@ -89,17 +93,23 @@ class _NearbyNGOState extends State<NearbyNGO> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppConstantsColors.accentColor,
         title: Text('Nearby NGOs'),
       ),
       body: _ngos.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(
+            color: AppConstantsColors.accentColor,
+          ))
           : ListView.builder(
+
               itemCount: _ngos.length,
               itemBuilder: (context, index) {
                 final ngo = _ngos[index];
-                return ListTile(
-                  title: Text(ngo.name),
-                  subtitle: Text('${ngo.address} - ${ngo.distance.toStringAsFixed(2)} km away'),
+                return CardNearby(
+                  ngoName: ngo.name,
+                  ngoAddress: ngo.address,
+                  distance: ngo.distance.toStringAsFixed(2),
+                  website: ngo.website,
                 );
               },
             )

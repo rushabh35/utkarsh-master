@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:utkarsh/constants/app_constants_colors.dart';
 import 'package:utkarsh/screens/FundRaising/FundRaising_create.dart';
+import 'package:utkarsh/screens/Home/Home.dart';
 import 'package:utkarsh/utils/ui/CustomButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -21,7 +22,7 @@ class MedicalFRHome extends StatefulWidget {
 }
 
 class _MedicalFRHomeState extends State<MedicalFRHome> {
-  String _selectedRelation = "Mother";
+  String? _selectedRelation; 
 
   final TextEditingController _relativeController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
@@ -387,6 +388,7 @@ Future<void> _uploadImages(String documentId) async {
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: DropdownButtonFormField<String>(
+                              hint: const Text('Select Relation'),
                               decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey[200]!, width: 2),
@@ -399,14 +401,14 @@ Future<void> _uploadImages(String documentId) async {
                                 filled: true,
                                 fillColor: Colors.grey[200],
                               ),
-                              value: _selectedRelation, // Ensure this is a variable in your state class
+                              value: _selectedRelation, // This is now nullable
                               icon: const Icon(Icons.arrow_downward, color: Colors.grey),
-                              iconSize: 15,
+                              iconSize: 24,
                               elevation: 16,
-                              style: const TextStyle(color: Colors.black, fontSize: 13),
+                              style: const TextStyle(color: Colors.black),
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  _selectedRelation = newValue!;
+                                  _selectedRelation = newValue;
                                 });
                               },
                               items: <String>[
@@ -415,7 +417,9 @@ Future<void> _uploadImages(String documentId) async {
                                 'Sibling',
                                 'Child',
                                 'Spouse',
-                                'Yourself'
+                                'Yourself',
+                                'Friend',
+                                'Others'
                               ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -636,7 +640,7 @@ Future<void> _uploadImages(String documentId) async {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              const FundRaisingCreate()),
+                                                              const HomePage()),
                                                     );
                                                   },
                                                   child: const Text('OK'),
