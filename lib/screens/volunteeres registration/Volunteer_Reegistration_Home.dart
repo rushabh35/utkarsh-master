@@ -22,30 +22,36 @@ class _VolunteerRegistrationHomeState extends State<VolunteerRegistrationHome> {
 
   Future<void> fetchRegistrationStatus() async {
     String currentUserUID = FirebaseAuth.instance.currentUser!.uid;
-    QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance.collection('UpcomingEvents').get();
 
-    for (var event in eventsSnapshot.docs) {
+    // Fetch the registration status for each event
+    QuerySnapshot eventsSnapshot =
+        await FirebaseFirestore.instance.collection('UpcomingEvents').get();
+
+    eventsSnapshot.docs.forEach((event) {
       String eventID = event.id;
       List<dynamic>? registeredUsers = event['registeredUsers'];
-      setState(() {
-        registrationStatus[eventID] = registeredUsers != null && registeredUsers.contains(currentUserUID);
-      });
-    }
+
+      if (registeredUsers != null && registeredUsers.contains(currentUserUID)) {
+        setState(() {
+          registrationStatus[eventID] = true;
+        });
+      } else {
+        setState(() {
+          registrationStatus[eventID] = false;
+        });
+      }
+    });
   }
 
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    var sizeHeight = size.height;
+    var sizeWidth = size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text('Volunteer Registration', style: TextStyle(color: AppConstantsColors.blackColor)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.info_outline, color: AppConstantsColors.accentColor),
-            onPressed: () {
-              // Action for more information or help
-            },
-          ),
-        ],
+        
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -90,7 +96,106 @@ class _VolunteerRegistrationHomeState extends State<VolunteerRegistrationHome> {
                       EventDetailRow(icon: Icons.description, detail: event['description'], label: 'Description'),
                       EventDetailRow(icon: Icons.person, detail: event['raisedBy'], label: 'Raised By'),
                       const SizedBox(height: 20),
-                      RegistrationButton(isUserRegistered: isUserRegistered, eventID: eventID, currentUserUID: FirebaseAuth.instance.currentUser!.uid),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          isUserRegistered
+                              ? const Text(
+                                  'Already Registered',
+                                  style: TextStyle(
+                                    color: AppConstantsColors.accentColor,
+                                    fontSize: 16,
+                                  ),
+                                )
+                              : CustomButton(
+                                  width: sizeWidth * 0.5,
+                                  height: 30,
+                                  buttonColor: AppConstantsColors.accentColor,
+                                  text: 'Register for Event',
+                                  onPressed: () async {
+                                    String currentUserUID =
+                                        FirebaseAuth.instance.currentUser!.uid;
+                                    String eventID = event!.id;
+                                    try {
+                                      await FirebaseFirestore.instance
+                                          .collection('Users')
+                                          .doc(currentUserUID)
+                                          .update({
+                                        "registeredEvents":
+                                            FieldValue.arrayUnion([eventID]),
+                                      });
+
+                                      // Update the UpcomingEvents collection
+                                      await FirebaseFirestore.instance
+                                          .collection('UpcomingEvents')
+                                          .doc(eventID)
+                                          .update({
+                                        "registeredUsers":
+                                            FieldValue.arrayUnion(
+                                                [currentUserUID]),
+                                      });
+
+                                      setState(() {
+                                        registrationStatus[eventID] = true;
+                                      });
+                                      // }
+
+                                      // ignore: use_build_context_synchronously
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Success'),
+                                            content: const Text(
+                                                "Successfully saved data"),
+                                            actions: [
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      AppConstantsColors
+                                                          .accentColor,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text('OK'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    } catch (error) {
+                                      // Handle errors, if any
+                                      String errorMessage =
+                                          "Error updating Users collection: $error";
+                                      // ignore: use_build_context_synchronously
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Error'),
+                                            content: Text(errorMessage),
+                                            actions: [
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      AppConstantsColors
+                                                          .accentColor,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text('OK'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
+                                  },
+                                ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -169,7 +274,12 @@ class RegistrationButton extends StatelessWidget {
             icon: const Icon(Icons.check_circle_outline),
             label: const Text('Register for Event'),
             onPressed: () async {
-              // Registration logic here
+              await FirebaseFirestore.instance.collection('UpcomingEvents').doc(eventID).update({
+                'registeredUsers': FieldValue.arrayUnion([currentUserUID]),
+              });
+              await FirebaseFirestore.instance.collection('Users').doc(currentUserUID).update({
+                'registeredEvents': FieldValue.arrayUnion([eventID]),
+              });
             },
           );
   }
