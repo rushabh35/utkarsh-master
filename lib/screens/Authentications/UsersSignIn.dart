@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:utkarsh/screens/Home/Home.dart';
+import 'package:utkarsh/screens/book%20a%20pickup/BookPickup.dart';
 import 'package:utkarsh/services/auth.dart';
 import '../../constants/app_constants_colors.dart';
 import '../../utils/ui/ClickableText.dart';

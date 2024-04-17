@@ -116,7 +116,7 @@ class _VolunteerRegistrationHomeState extends State<VolunteerRegistrationHome> {
                                     String currentUserUID =
                                         FirebaseAuth.instance.currentUser!.uid;
                                     String eventID = event!.id;
-                                    try {
+                                    try {  
                                       await FirebaseFirestore.instance
                                           .collection('Users')
                                           .doc(currentUserUID)
